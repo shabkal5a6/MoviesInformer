@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---->
+<resources>
+    <string-array name="listOptions">
+        <item>Red</item>
+        <item>Blue</item>
+
+    </string-array>
+
+    <string-array name="listValues">
+        <item>red</item>
+        <item>blue</item>
+    </string-array>
+
+</resources>

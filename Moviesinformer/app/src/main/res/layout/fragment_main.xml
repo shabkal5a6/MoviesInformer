@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context="com.shabk.moviesinformer.MainActivityFragment"
+    android:background="@color/darkRed"
+    android:orientation="vertical"
+    android:id="@+id/main_linear_layout"
+    android:weightSum="1">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:id="@+id/options"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="130dp"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layout_height="wrap_content"></LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingTop="10dp"
+            android:gravity="right"
+            android:text="Sort By:"/>
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:background="@android:color/transparent"
+            android:layout_gravity="right"
+
+            />
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_gravity="right"
+            android:layout_height="40dp"
+            android:gravity="right"
+            android:src="@drawable/down"/>
+
+
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_alignBottom="@+id/options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:id="@+id/r_view"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentStart="true"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+
+
+
+
+</LinearLayout>
+</RelativeLayout>
