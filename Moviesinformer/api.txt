@@ -3,7 +3,7 @@ movieDB api
 f57602bf1305f9839cdab22ac1a39a01
 
 
-api_key=f57602bf1305f9839cdab22ac1a39a01
+api_key=""
 
 
 link example
