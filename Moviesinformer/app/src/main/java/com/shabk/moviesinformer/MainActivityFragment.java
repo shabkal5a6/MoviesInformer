@@ -2,14 +2,10 @@ package com.shabk.moviesinformer;
 
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -19,28 +15,20 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,14 +38,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -66,7 +51,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
 
     List<MovieObj> MoviesList;
     public LayouterAdapter mViewAdapter;
-    private boolean valid = false;
+
     public  int select ;
     //public RecyclerView recyclerView;
     @BindView(R.id.r_view) RecyclerView recyclerView;
@@ -75,12 +60,13 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
    // public LinearLayout mainLayout, itemLayout;
     @BindView(R.id.main_linear_layout) LinearLayout mainLayout;
     @BindView(R.id.spinner) Spinner sort;
-    int s ;
+
     private int favourite = 2;
-    private SharedPreferences pr;
+
     private boolean pause = false;
     List<String> categories;
-    String[] so = {"popular","hieghst","fav"};
+
+
     final String sort_by_popular = "Most popular";
     final String sort_by_highest_rate = "Highest-Rated";
     final String sort_by_favorite = "Favorites";
@@ -100,7 +86,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
         ButterKnife.bind(this, rootView);
         rotate = false;
         getActivity().getSupportLoaderManager().initLoader(OPERATION_SEARCH_LOADER, null, this);
-
+        MoviesList = new ArrayList<>();
 
         // here the user preferences will be applied to the main Fragment
         getSharedPreferences();
@@ -115,10 +101,14 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
 
 
         if (savedInstanceState == null) {
-            MoviesList = new ArrayList();
+
+           // MoviesList = new ArrayList();
+            makeOperationSearchQuery();
+            select = popular;
         }
         else{
             rotate = true;
+
             MoviesList = savedInstanceState.getParcelableArrayList("my_list");
             // used if the user rotates the phone
             scrollstate = savedInstanceState.getInt("scroll");
@@ -148,19 +138,19 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
 
 
 
-        categories = new ArrayList<String>();
+        categories = new ArrayList<>();
         addItemsToCategory();   // 3 orders to sort movies list
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getActivity(),android.R.layout.simple_spinner_dropdown_item,categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this.getActivity(),android.R.layout.simple_spinner_dropdown_item,categories);
 
         // add spinner , which used to sort the movies list
         sort.setAdapter(dataAdapter);
 
-        // set the old selection, if there is one
+        // set the old selection, if there is one , else the default is Most popular
         sort.setSelection(select,false);
 
         // get Movies data
-        makeOperationSearchQuery();
+
 
         sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -168,9 +158,9 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
                 String item;
 
 
-                if(pause == true){
+                if(pause)
                     pause = false;
-                }
+
 
                 item = parent.getSelectedItem().toString();
 
@@ -202,7 +192,6 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
 
         // add sort list
     private void addItemsToCategory(){
-
         categories.add(sort_by_popular);
         categories.add(sort_by_highest_rate);
         categories.add(sort_by_favorite);
@@ -217,7 +206,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
         edit.putInt("select", select);
         edit.putBoolean("pause",true);
         edit.putInt("scroll",itemClicked);
-        edit.commit();
+        edit.apply();
         rotate = false;
 
     }
@@ -230,7 +219,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
         SharedPreferences example = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         pause = example.getBoolean("pause", false);
-        select = example.getInt("select", 0);
+       // select = example.getInt("select", 0);
         if(rotate) // the app run onPause method while rotating the phone, so this will specifiy if there is rotation or MovieDetail activity runs
             scrollstate = example.getInt("scroll_rotate",0);
         else
@@ -256,7 +245,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
         SharedPreferences example = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor edit = example.edit();
         edit.putInt("scroll_rotate",mLayoutManager.findFirstVisibleItemPosition());
-        edit.commit();
+        edit.apply();
         outState.putInt("select",select);
         outState.putInt("scroll",mLayoutManager.findFirstVisibleItemPosition());
         outState.putParcelableArrayList("my_list", (ArrayList<? extends Parcelable>) MoviesList);
@@ -322,6 +311,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
         }
     }
 
+   // @BindView(R.string.api_key)  String apiKey;
     @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<MovieObj[]> onCreateLoader(int id, Bundle args) {
@@ -337,14 +327,19 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
             public MovieObj[] loadInBackground() {
                 HttpURLConnection urlConnection = null;
                 BufferedReader reader = null;
-
+                //String apiKey = null;
                 // Will contain the raw JSON response as a string.
                 String MoviesJsonStr = null;
-                final String apiKey =  getString(R.string.api_key);
-                final String url_highest_rate = getString(R.string.url_highest_rating);
-                final String url_most_popular =  getString(R.string.popular);
-
-
+                //String url_highest_rate = null;
+                //String url_most_popular=null;
+                final String apiKey = getContext().getString(R.string.api_key);
+                final String url_highest_rate = getContext().getString(R.string.url_highest_rating);
+                final String url_most_popular = getContext().getString(R.string.popular);
+               /* if(isAdded()) {
+                    String apiKey = getString(R.string.api_key);
+                    String url_highest_rate = getString(R.string.url_highest_rating);
+                    String url_most_popular = getString(R.string.popular);
+                }*/
 
                 try {
 
@@ -455,9 +450,9 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
 
                 final String TITLE = "title";
                 final String IMAGE = "poster_path";
-                String image_url = null;
-                if(isAdded())
-                    image_url = getString(R.string.image_url);
+               // String image_url = null;
+
+                final String image_url = getContext().getString(R.string.image_url);
 
 
                 JSONObject MoviesJSON = new JSONObject(MovieJsonStr);
@@ -477,7 +472,7 @@ public class MainActivityFragment extends Fragment implements LayouterAdapter.Li
                     image = movieDetail.getString(IMAGE);
 
 
-                    resultObj[i] = new MovieObj(image_url + image, title);
+                    resultObj[i] = new MovieObj( image_url+image, title);
 
                 }
 

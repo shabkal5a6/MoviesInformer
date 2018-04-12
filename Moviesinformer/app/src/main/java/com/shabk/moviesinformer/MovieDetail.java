@@ -5,11 +5,14 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -33,6 +36,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.BindView;
@@ -66,6 +70,7 @@ public class MovieDetail extends Activity {
     final int favourite = 2;
     private int movie_id;
     private int waiting_time = 1000;
+    private boolean pause = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,15 +78,16 @@ public class MovieDetail extends Activity {
         ButterKnife.bind(this);
 
 
-
-
-
             final Intent intent = getIntent();
             if (intent != null && intent.hasExtra("item")) {
                 item = intent.getIntExtra("item",60);
                 selected = intent.getIntExtra("category", 0);
                 f_item = intent.getIntExtra("array_size", 20);
+
             }
+            else onresume();
+
+
 
 
 
@@ -180,6 +186,38 @@ public class MovieDetail extends Activity {
             });
         }
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        SharedPreferences example = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor edit = example.edit();
+        edit.putInt("item", item);
+        edit.putInt("selected",selected);
+       // edit.putInt("scroll",itemClicked);
+        edit.commit();
+        pause = true;
+        edit.putBoolean("pause",pause);
+
+    }
+
+
+
+
+    public void onresume() {
+
+        SharedPreferences example = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        pause = example.getBoolean("pause",false);
+
+        if(pause) {
+            item = example.getInt("item", 0);
+            selected = example.getInt("selected", 0);
+        }
+        pause = false;
+
+    }
+
+
     // delete favorite movie from db
     private void deleteFromDatabase(String position) {
         getContentResolver().delete(UserFavoritesDBProvider.CONTENT_URI,UserFavoritesDBProvider.TITLE + "='"+ position+"'",
@@ -259,7 +297,7 @@ public class MovieDetail extends Activity {
 
                     String image;
 
-
+                System.out.println(item+ " ::::::::::::;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"+selected);
                     JSONObject movieDetail = movieArray.getJSONObject(item);
 
                     title = movieDetail.getString(TITLE);

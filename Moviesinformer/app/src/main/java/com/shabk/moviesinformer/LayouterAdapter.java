@@ -115,6 +115,7 @@ public class LayouterAdapter extends RecyclerView.Adapter<LayouterAdapter.MyView
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
+                System.out.println("noImagedownloaded::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
                 //e.printStackTrace();
             }
             return mIcon11;
