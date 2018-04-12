@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Movies informer</string>
     <string name="action_settings">Settings</string>
-    <!--<string name="api_key">f57602bf1305f9839cdab22ac1a39a01</string>-->
-    <string name="api_key">f57602bf1305f9839cdab22ac1a39a01</string>
+    <string name="api_key">"your api"</string>
     <string name="image_url">https://image.tmdb.org/t/p/w500</string>
     <string name="url_highest_rating">https://api.themoviedb.org/3/movie/popular?api_key=</string>
     <string name="popular">https://api.themoviedb.org/3/movie/top_rated?api_key=</string>
